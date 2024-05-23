@@ -1,5 +1,7 @@
 module.exports = {
     homepage: "/",
     login: "/login",
-    signup: "/signup"
+    signup: "/signup",
+    users: "/users",
+    userID: "/users/:id"
 }
