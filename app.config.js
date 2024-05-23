@@ -1,6 +1,5 @@
 const Pool = require("pg").Pool;
 
-const { Client } = require('pg');
 module.exports = {
     port: 3000,
     db: new Pool({

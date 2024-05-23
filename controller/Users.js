@@ -1,5 +1,6 @@
 const config = require("../app.config");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const generateAccessToken = (email, id) => {
     return jwt.sign(
@@ -7,8 +8,17 @@ const generateAccessToken = (email, id) => {
         id,
         email,
       },
-      "urokodaki"
+      "urokodaki",
+      {
+        expiresIn: 3600,
+      }
     );
+};
+
+const encryptPassword = (password) => {
+    const hash = crypto.createHash("sha256");
+    hash.update(password);
+    return hash.digest("hex");
 };
 
 const getUsers = (request, response) => {
@@ -20,6 +30,21 @@ const getUsers = (request, response) => {
       })
 }
 
+const signup = async (request, response) => {
+    const {email, password, names} = request.body;
+
+    try {
+        await config.db.connect();
+
+        const encryptedPassword = encryptPassword(password);
+        await config.db.query("INSERT INTO users (names, email, password) VALUES ($1, $2, $3) RETURNING *",[names, email, encryptedPassword], (error, results) => {
+            return response.status(200).json("new user added")
+        })
+    } catch (error) {
+        
+    }
+}
+
 const login = async (request, response) => {
     const { email, password } = request.body;
     try {
@@ -27,7 +52,9 @@ const login = async (request, response) => {
 
         const result = await config.db.query("SELECT * FROM users WHERE email=$1", [email]);
 
-        if(password !== result.rows[0].password){
+        const ecptPassword = encryptPassword(password);
+
+        if(ecptPassword !== result.rows[0].password){
             return response.status(401).json("failed to login");
         }
 
@@ -46,5 +73,6 @@ const login = async (request, response) => {
 
 module.exports = {
     getUsers,
-    login
+    login,
+    signup
 }
