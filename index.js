@@ -26,7 +26,7 @@ app.get(servicesRoutes.services,servicesMiddleware.check, servicesController.get
 app.get(servicesRoutes.servicesId,servicesMiddleware.check, servicesController.getServicesByID);
 app.put(servicesRoutes.servicesId,servicesMiddleware.check, servicesController.updateServices);
 app.delete(servicesRoutes.servicesId,servicesMiddleware.check, servicesController.deleteServices);
-app.post(servicesRoutes.services,servicesMiddleware.check, servicesController.createServices)
+app.post(servicesRoutes.services,servicesMiddleware.check, servicesController.createServices);
 
 app.listen(config.port, () => {
     console.log(`api app running on port: ${config.port}`);
