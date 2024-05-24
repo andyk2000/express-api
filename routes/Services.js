@@ -1,4 +1,5 @@
 module.exports = {
     services: "/services",
-    servicesId: "/services/:id"
+    servicesId: "/services/:id",
+    servicesStoreId: "/stores/services/:sid"
 }

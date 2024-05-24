@@ -64,9 +64,22 @@ const createServices = async (request, response) => {
     await config.db.connect();
     try {
         const {name, price, ingredients} = request.body;
-        console.log([name, price, ingredients]);
         config.db.query('INSERT INTO services (name, price, ingredients) VALUES ($1, $2, $3) RETURNING *', [name, price, ingredients], (error, results) => {
             return response.status(200).json(`new service added with id:${results.rows[0].id}`)
+        })
+    } catch (error) {
+        
+    }
+}
+
+const getServicesByOwner = async (request, response) => {
+    await config.db.connect();
+    try {
+        const storeId = request.params.sid;
+        const page = parseInt(request.query.page);
+        const content = parseInt(request.query.content);
+        config.db.query('SELECT * FROM services WHERE store_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3',[storeId,content,page], (error, results) => {
+            response.status(200).json(results.rows);
         })
     } catch (error) {
         
@@ -78,5 +91,6 @@ module.exports = {
     getServicesByID,
     updateServices,
     deleteServices,
-    createServices
+    createServices,
+    getServicesByOwner
 }

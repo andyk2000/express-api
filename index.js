@@ -7,6 +7,8 @@ const servicesRoutes = require("./routes/Services");
 const usersController = require("./controller/Users");
 const servicesController = require("./controller/Services");
 const servicesMiddleware = require("./middlewares/Services");
+const storesRoutes = require("./routes/Stores");
+const storesController = require("./controller/Stores");
 
 const app = express();
 
@@ -27,6 +29,9 @@ app.get(servicesRoutes.servicesId,servicesMiddleware.check, servicesController.g
 app.put(servicesRoutes.servicesId,servicesMiddleware.check, servicesController.updateServices);
 app.delete(servicesRoutes.servicesId,servicesMiddleware.check, servicesController.deleteServices);
 app.post(servicesRoutes.services,servicesMiddleware.check, servicesController.createServices);
+app.get(servicesRoutes.servicesStoreId, servicesController.getServicesByOwner)
+
+app.get(storesRoutes.storesOwner, storesController.getStoresByOwner);
 
 app.listen(config.port, () => {
     console.log(`api app running on port: ${config.port}`);

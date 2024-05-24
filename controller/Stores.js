@@ -64,9 +64,36 @@ const createStores = async (request, response) => {
     await config.db.connect();
     try {
         const {storeName, owner_id, category} = request.body;
-        console.log([storeName, owner_id, category]);
         config.db.query('INSERT INTO stores (storeName, owner_id, category) VALUES ($1, $2, $3) RETURNING *', [storeName, owner_id, category], (error, results) => {
-            return response.status(200).json(`new service added with id:${results.rows[0].id}`)
+            return response.status(200).json(`new service added with id:${results.rows[0].id}`);
+        })
+    } catch (error) {
+        
+    }
+}
+
+const getStoresByOwner = async (request, response) => {
+
+    await config.db.connect();
+    try {
+        const owner_id = request.params.oid;
+        config.db.query(`SELECT 
+        stores.id AS store_id,
+        stores.name AS store_name,
+        stores.category AS store_category,
+        users.id AS user_id,
+        users.names AS user_name,
+        users.email AS user_email
+    FROM 
+        stores
+    JOIN 
+        users ON stores.owner_id = users.id
+    WHERE 
+        users.id = $1`, [owner_id] , (error, results) => {
+            if (error) {
+                return response.status(500).json({ error: error.message });
+            }
+            return response.status(200).json(results.rows);
         })
     } catch (error) {
         
@@ -78,5 +105,6 @@ module.exports = {
     getStoresByID,
     updateStores,
     deleteStores,
-    createStores
+    createStores,
+    getStoresByOwner
 }

@@ -1,4 +1,5 @@
 module.exports = {
     stores: "/stores",
-    storesId: "/stores/:id"
+    storesId: "/stores/:id",
+    storesOwner: "/stores/:oid"
 }
