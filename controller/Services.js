@@ -77,8 +77,13 @@ const getServicesByOwner = async (request, response) => {
     try {
         const storeId = request.params.sid;
         const page = parseInt(request.query.page);
-        const content = parseInt(request.query.content);
-        config.db.query('SELECT * FROM services WHERE store_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3',[storeId,content,page], (error, results) => {
+        const limit = parseInt(request.query.limit);
+
+        let offset = 0;
+        if(page>1){
+            offset= (page-1)*limit;
+        }
+        config.db.query('SELECT * FROM services WHERE store_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3',[storeId,limit,offset], (error, results) => {
             response.status(200).json(results.rows);
         })
     } catch (error) {
